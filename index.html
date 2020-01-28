@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Preload</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    
+    <div id="progress"></div>
+    <div id="gallery"></div>
+
+    <script src="https://code.createjs.com/1.0.0/preloadjs.min.js"></script>
+    <script>
+        let progress = document.getElementById('progress');
+        let gallery = document.getElementById('gallery');
+
+        var queue = new createjs.LoadQueue(false);
+
+        queue.on("progress", event => {
+            console.log(event);
+            let progress = Math.floor(event.progress * 100);
+            this.progress.style.width = progress + '%';
+            if (progress === 100) {
+                console.log('all done');
+                document.querySelector('body').style.background = 'white';
+            }
+        })
+
+        queue.on("complete", event => {
+           gallery.classList.add('fadeIn');
+           
+           progress.classList.add('fadeOut');
+        })
+
+        queue.on("fileload", handleFileComplete);
+        queue.loadFile('https://cdn.solace.com/wp-content/uploads/2019/01/bg-clouds.jpg');
+        queue.loadFile('https://www.delltechnologies.com/uploads/2018/08/Roese-Cloud-strat-2-e1535330543320.jpg');
+
+        function handleFileComplete(event) {
+            var item = event.item;
+            var type = item.type;
+            
+            if (type == createjs.Types.IMAGE) {
+                gallery.appendChild(event.result);
+                console.log(event.result)
+            }
+        }
+    </script>
+</body>
+</html>
